@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion Cabinet Dentaire</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 20px; background: #f8fafc; color: #1e293b; }
+    h1 { color: #0284c7; font-size: 24px; }
+    .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+    h2 { font-size: 18px; margin-top: 0; color: #334155; }
+    label { display: block; margin-top: 12px; font-weight: 600; font-size: 14px; }
+    input, button { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    button { background: #0284c7; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 18px; }
+    button:hover { background: #0369a1; }
+    .teeth-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 12px; }
+    .tooth { padding: 8px 0; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-weight: bold; cursor: pointer; background: #f1f5f9; user-select: none; }
+    .tooth.soigner { background: #fef08a; border-color: #eab308; }
+    .tooth.traite { background: #bbf7d0; border-color: #22c55e; }
+    .tooth.extrait { background: #fecaca; border-color: #ef4444; }
+    .legend { display: flex; gap: 10px; font-size: 11px; margin-top: 10px; }
+    .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>Cabinet Dentaire — Gestion Simplifiée</h1>
+
+  <div class="container">
+    <div class="card">
+      <h2>1. Fiche Patient</h2>
+      <label>Nom & Prénom</label>
+      <input type="text" placeholder="Ex: Benali Mohamed">
+      <label>Téléphone</label>
+      <input type="text" placeholder="06XX XX XX XX">
+      <label>Note médicale</label>
+      <input type="text" placeholder="Ex: Diabétique, Allergie Penicilline">
+    </div>
+
+    <div class="card">
+      <h2>2. Schéma Dentaire</h2>
+      <div class="teeth-grid" id="grid"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:#f1f5f9;border:1px solid #ccc"></span> Saine</span>
+        <span><span class="dot" style="background:#fef08a"></span> À traiter</span>
+        <span><span class="dot" style="background:#bbf7d0"></span> Traitée</span>
+        <span><span class="dot" style="background:#fecaca"></span> Extraite</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Règlement (DZD)</h2>
+      <label>Acte réalisé</label>
+      <input type="text" placeholder="Ex: Soin carie + Detartrage">
+      <label>Montant Total (DZD)</label>
+      <input type="number" id="tot" placeholder="0.00" oninput="calc()">
+      <label>Avance (DZD)</label>
+      <input type="number" id="pay" placeholder="0.00" oninput="calc()">
+      <label>Reste à payer (DZD)</label>
+      <input type="number" id="rst" placeholder="0.00" readonly style="background:#f8fafc; font-weight:bold;">
+      <button onclick="window.print()">Imprimer le Reçu</button>
+    </div>
+  </div>
+
+  <script>
+    const g = document.getElementById('grid');
+    const c = ['', 'soigner', 'traite', 'extrait'];
+    for (let i = 1; i <= 32; i++) {
+      let d = document.createElement('div');
+      d.className = 'tooth';
+      d.innerText = i;
+      d.dataset.s = 0;
+      d.onclick = function() {
+        let next = (parseInt(this.dataset.s) + 1) % c.length;
+        this.dataset.s = next;
+        this.className = 'tooth ' + c[next];
+      };
+      g.appendChild(d);
+    }
+    function calc() {
+      let t = parseFloat(document.getElementById('tot').value) || 0;
+      let p = parseFloat(document.getElementById('pay').value) || 0;
+      document.getElementById('rst').value = (t - p).toFixed(2);
+    }
+  </script>
+
+</body>
+</html>
